@@ -39,9 +39,10 @@ class PriceReader :
 
 class HoldingReader(abc.ABC):
     
-    data = []
+   
 
     def __init__(self) -> None:
+        self.data = []
         super().__init__()
 
     def get_date_list(self):
@@ -64,6 +65,14 @@ class HoldingReader(abc.ABC):
 
     def get_holding_by_date(self, date):
         return self.data.loc[self.data['date'] == date]
+    
+    def get_holding(self, company, contract, date, direction):
+        res = self.data[(self.data['date']==date) & (self.data['company']==company) &
+                  (self.data['contract']==contract) & (self.data['direction']==direction)]
+        if len(res) > 0:
+            return res.iloc[0].position
+        return 0
+        
 
 
 class DalianHoldingReader(HoldingReader):

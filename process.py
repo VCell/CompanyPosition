@@ -12,53 +12,8 @@ import pandas as pd
 from module.data_reader import holding_reader_factory, PriceReader
 from module.global_val import Config, Statics
 from module import util
+from module.company_position import CompanyPosition
 import sys
-
-POSITION_LONG = 1
-POSITION_SHORT = -1
-
-class CompanyPosition:
-
-    def __init__(self, company, contract, direction, position, date, price) -> None:
-        self.company = company
-        self.contract = contract
-        self.direction = direction
-        self.ori_position = self.position = position
-        self.ori_date = self.date = date
-        self.ori_price = self.price = float(price)
-        self.close_profit = float(0)
-        self.position_cost = float(price * position)
-        self.max_cost = position * price 
-    
-    def update(self, position, date, price):
-        if position > self.position:
-            self.position_cost = (position - self.position) * price
-        elif position < self.position:
-            ave_cost = self.position_cost / self.position
-            profit = (self.position - position) * (price - ave_cost) * self.direction
-            self.close_profit += profit
-            self.position_cost = self.position_cost * position / self.position
-        self.date = date
-        self.position = position
-        self.price
-        if self.position_cost > self.max_cost:
-            self.max_cost = self.position_cost
-
-    def get_op_profit(self):
-        base_profit = (self.price - self.ori_price) * self.ori_position * self.direction
-        real_profit = self.close_profit + self.position * (self.price - self.position_cost/self.position) * self.direction
-        return real_profit - base_profit
-
-    def get_rate(self):
-        if self.max_cost == 0:
-            print(self.company, self.contract)
-        return self.get_op_profit() / self.max_cost
-
-    def get_join_rate(self, other:'CompanyPosition'):
-        ret = (self.get_op_profit() + other.get_op_profit()) / (self.max_cost + other.max_cost)
-        return ret    
-
-
 
 def update_position_map(posmap, company, contract, direction, position, date, price):
     if not contract in posmap:

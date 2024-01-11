@@ -10,7 +10,7 @@ Created on 2023-12-26
 import pandas as pd
 
 import plotly.graph_objs as go
-from module.global_val import Statics
+from module.global_val import Statics, Config
 import module.data_reader as data_reader
 from plotly.subplots import make_subplots
 from module import util
@@ -59,5 +59,5 @@ def draw_company_holding(company, contract, date_iter):
     fig.show()
 
 if __name__ == '__main__':
-    date_iter = util.date_iterator('20231226', 30)
-    draw_company_holding('国泰君安', 'i2401', date_iter)
+    date_iter = util.date_iterator('20240110', Config.period)
+    draw_company_holding('摩根大通', 'i2405', date_iter)

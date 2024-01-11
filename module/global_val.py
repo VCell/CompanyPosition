@@ -8,5 +8,5 @@ class Statics:
 
 class Config:
     separate_direction = False
-    period = 30
+    period = 60
     

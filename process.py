@@ -71,3 +71,6 @@ if __name__ == '__main__':
         data.sort(key=lambda x: x[3])
         df = pd.DataFrame(data,columns=['contract','company', 'direction', 'rate'])
         df.to_csv(os.path.join(result_path, contract+'.csv'))
+        for item in df.itertuples():
+            if item.rate>0.2:
+                print(item)

@@ -31,8 +31,6 @@ class HoldingDownloader(abc.ABC):
 
 class DalianHoldingDownloader(HoldingDownloader):
 
-    outpath = ''
-
     def __init__(self) -> None:
         super().__init__()
         self.outpath = os.path.join(get_data_path(), 'position', Statics.CE_DALIAN)
@@ -69,14 +67,26 @@ class DalianHoldingDownloader(HoldingDownloader):
 
 class ZhengzhouHoldingDownloader(HoldingDownloader):
 
-    outpath = ''
-
     def __init__(self) -> None:
         super().__init__()
         self.outpath = os.path.join(get_data_path(), 'position', Statics.CE_ZHENGZHOU)
 
     def download(self, date):
-        pass
+        url = 'http://www.czce.com.cn/cn/DFSStaticFiles/Future/%s/%s/FutureDataHolding.txt'%(date[0:4], date)
+        outpath = os.path.join(self.outpath, date+'.txt')
+        resp = requests.get(url)
+        if resp.status_code == 200:
+            with open(outpath, 'wb') as fp:
+                fp.write(resp.content)   
+            print("download done: zhengzhou %s"%(date)) 
+        elif resp.status_code == 404:
+            print('ERROR: %s no data'%(date))
+        else:
+            print('ERROR: %s http code %d'%(date, resp.status_code))
+        
 
     def exist(self, date) -> bool:
-        pass
+        outpath = os.path.join(self.outpath, date+'.txt')
+        if os.path.isfile(outpath):
+            return True
+        return False
